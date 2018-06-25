@@ -29,10 +29,12 @@ canvas.height = window.innerHeight
 const ctx = canvas.getContext('2d')
 
 const enemies = []
+const coins = []
 
 const player = {
     x: 50,
-    y: 50
+    y: 50,
+    size: 20
 }
 let score = 0
 
@@ -41,10 +43,37 @@ while (enemies.length < 10) {
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
         vx: Math.random() > 0.5 ? 1 : -1,
-        vy: Math.random() > 0.5 ? 1 : -1
+        vy: Math.random() > 0.5 ? 1 : -1,
+        size: Math.random() * 20 + 20
     })
 }
 
+function reset () {
+    while (coins.length) coins.pop()
+
+    player.x = Math.random() * canvas.width
+    player.y = Math.random() * canvas.height
+    score = 0
+
+    while (coins.length < 10) {
+        coins.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 15 + 5
+        })
+    }
+}
+reset()
+
+function collides (obj1, obj2) {
+    return !(obj1.x + obj1.size/2 < obj2.x - obj2.size/2 ||
+             obj2.x + obj2.size/2 < obj1.x - obj1.size/2 ||
+             obj1.y + obj1.size/2 < obj2.y - obj2.size/2 ||
+             obj2.y + obj2.size/2 < obj1.y - obj1.size/2)
+}
+
+// debugger
+// collides({ x: 5, y: 5, size: 5}, { x: 10, y: 10, size: 6})
 
 function render () {
     // setTimeout(render, 16)
@@ -62,7 +91,10 @@ function render () {
 
     // player rendering
     ctx.fillStyle = mouseIsDown ? 'cyan' : 'blue' 
-    ctx.fillRect(player.x - 10, player.y - 10, 20, 20)
+    ctx.fillRect(player.x - player.size/2,
+                 player.y - player.size/2,
+                 player.size,
+                 player.size)
 
     // enemy logic + render
     enemies.forEach(enemy => {
@@ -71,14 +103,31 @@ function render () {
 
         ctx.fillStyle = 'red'
         ctx.fillRect(
-            enemy.x - 10,
-            enemy.y - 10,
-            20,
-            20
+            enemy.x - enemy.size / 2,
+            enemy.y - enemy.size / 2,
+            enemy.size,
+            enemy.size
         )
 
         if (enemy.x < 0 || enemy.x > canvas.width) enemy.vx *= -1
         if (enemy.y < 0 || enemy.y > canvas.height) enemy.vy *= -1
+
+        if (collides(player, enemy)) reset()
+    })
+
+    // coins logic + render
+    coins.forEach((coin, i) => {
+        ctx.save()
+        ctx.translate(coin.x, coin.y)
+        ctx.rotate(Date.now() / 200 % (Math.PI*2))
+        ctx.fillStyle = 'magenta'
+        ctx.fillRect(-coin.size/2, -coin.size/2, coin.size, coin.size)
+        ctx.restore()
+
+        if (collides(player, coin)) {
+            score += Math.ceil(coin.size)
+            coins.splice(i, 1)
+        }
     })
 
     ctx.fillStyle = 'black'
