@@ -17,7 +17,6 @@
     </style>
 </head>
 <body>
-<p>hi</p>
 <script>
 const canvas = document.createElement('canvas')
 document.body.appendChild(canvas)
@@ -38,16 +37,16 @@ ctx.lineWidth = '3'
 ctx.strokeRect(150, 100, 20, 20)
 
 ctx.beginPath()
-ctx.arc(50 + 10, 150 + 10, 10, 0, Math.PI*2)
-ctx.fill()
-ctx.stroke()
-
-ctx.beginPath()
 ctx.rect(100, 150, 20, 20)
 ctx.fill()
 ctx.stroke()
 
-ctx.fillStyle = '#FF0000'
+ctx.beginPath()
+ctx.arc(50 + 10, 150 + 10, 10, 0, Math.PI*2)
+ctx.fill()
+ctx.stroke()
+
+ctx.fillStyle = 'yellow'
 ctx.strokeStyle = 'green'
 ctx.beginPath()
 ctx.moveTo(160, 150)
@@ -56,6 +55,10 @@ ctx.lineTo(150, 170)
 ctx.closePath()
 ctx.fill()
 ctx.stroke()
+
+for (let i = 0; i < 200; i += 30) {
+    ctx.fillRect(50 + i, 200, 20, 20)
+}
 
 </script>
 </body>
