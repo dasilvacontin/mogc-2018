@@ -30,17 +30,11 @@ const ctx = canvas.getContext('2d')
 
 let x = 50
 let y = 50
-
 function render () {
     // setTimeout(render, 16)
     requestAnimationFrame(render)
     ctx.fillStyle = '#EEEEFF'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-    if (keyboard.a) x--
-    if (keyboard.d) x++
-    if (keyboard.w) y--
-    if (keyboard.s) y++
 
     ctx.fillStyle = mouseIsDown ? 'cyan' : 'blue' 
     ctx.fillRect(x - 10, y - 10, 20, 20)
@@ -60,59 +54,13 @@ document.addEventListener('mouseup', function () {
     mouseIsDown = false
 })
 
-const keyboard = {}
-
-document.addEventListener('keydown', function (event) {
-    keyboard[event.key] = true
+document.addEventListener('mousemove', function (event) {
+    const { pageX, pageY } = event
+    // const pageX = event.pageX
+    // const pageY = event.pageY
+    x = pageX
+    y = pageY
 })
-
-document.addEventListener('keyup', function (event) {
-    keyboard[event.key] = false
-})
-
-const enemies = []
-enemies.length
-
-const player = {
-    x: 50,
-    y: 50
-}
-
-enemies.push({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height
-})
-
-/**
-    simples:
-    number
-    string
-    boolean
-
-    let a = 5
-    let b = a
-    a === b // true
-    b = 6
-    a === b // false
-
-
-    complex (objects):
-    objects
-    array
-    function
-    Date
-
-    let a = { x: 5, y: 5 }
-    b = a
-    b.x = 7
-    a === b // true
-
-    const c = { x: 5, y: 5 }
-    a === c // false
-    c.x = 6
-    c = a // ERROR
-    **/
-
 
 </script>
 </body>
