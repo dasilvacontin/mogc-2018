@@ -28,23 +28,62 @@ canvas.height = window.innerHeight
 
 const ctx = canvas.getContext('2d')
 
-let x = 50
-let y = 50
+const enemies = []
+
+const player = {
+    x: 50,
+    y: 50
+}
+let score = 0
+
+while (enemies.length < 10) {
+    enemies.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: Math.random() > 0.5 ? 1 : -1,
+        vy: Math.random() > 0.5 ? 1 : -1
+    })
+}
+
 
 function render () {
     // setTimeout(render, 16)
     requestAnimationFrame(render)
+
+    // background clear
     ctx.fillStyle = '#EEEEFF'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    if (keyboard.a) x--
-    if (keyboard.d) x++
-    if (keyboard.w) y--
-    if (keyboard.s) y++
+    // player movement
+    if (keyboard.a) player.x--
+    if (keyboard.d) player.x++
+    if (keyboard.w) player.y--
+    if (keyboard.s) player.y++
 
+    // player rendering
     ctx.fillStyle = mouseIsDown ? 'cyan' : 'blue' 
-    ctx.fillRect(x - 10, y - 10, 20, 20)
-    // x++
+    ctx.fillRect(player.x - 10, player.y - 10, 20, 20)
+
+    // enemy logic + render
+    enemies.forEach(enemy => {
+        enemy.x += enemy.vx
+        enemy.y += enemy.vy
+
+        ctx.fillStyle = 'red'
+        ctx.fillRect(
+            enemy.x - 10,
+            enemy.y - 10,
+            20,
+            20
+        )
+
+        if (enemy.x < 0 || enemy.x > canvas.width) enemy.vx *= -1
+        if (enemy.y < 0 || enemy.y > canvas.height) enemy.vy *= -1
+    })
+
+    ctx.fillStyle = 'black'
+    ctx.font = "24px Helvetica"
+    ctx.fillText("Score: " + score, 20, 30)
 }
 
 // setInterval(render, 16)
@@ -68,19 +107,6 @@ document.addEventListener('keydown', function (event) {
 
 document.addEventListener('keyup', function (event) {
     keyboard[event.key] = false
-})
-
-const enemies = []
-enemies.length
-
-const player = {
-    x: 50,
-    y: 50
-}
-
-enemies.push({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height
 })
 
 /**
@@ -111,6 +137,17 @@ enemies.push({
     a === c // false
     c.x = 6
     c = a // ERROR
+
+    function functionName (arg1, arg2) {
+        code
+
+        return 'asdasd'
+    }
+
+    (arg1, arg2) => { ... }
+
+    arg1 => { ... }
+
     **/
 
 
