@@ -6,13 +6,15 @@
         }
     </style> -->
     <style>
-        body {
+        html, body {
             margin: 0;
+            padding: 0;
         }
 
         canvas {
             width: 100%;
             height: 100%;
+            cursor: help;
         }
     </style>
 </head>
@@ -27,26 +29,37 @@ canvas.height = window.innerHeight
 const ctx = canvas.getContext('2d')
 
 let x = 50
+let y = 50
 function render () {
     // setTimeout(render, 16)
     requestAnimationFrame(render)
     ctx.fillStyle = '#EEEEFF'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    ctx.fillStyle = 'blue'
-    ctx.fillRect(x, 100, 20, 20)
-    x++
+    ctx.fillStyle = mouseIsDown ? 'cyan' : 'blue' 
+    ctx.fillRect(x - 10, y - 10, 20, 20)
+    // x++
 }
 
 // setInterval(render, 16)
 // setTimeout(render, 16)
 requestAnimationFrame(render)
 
+let mouseIsDown = false
+document.addEventListener('mousedown', function (event) {
+    mouseIsDown = true
+})
+
+document.addEventListener('mouseup', function () {
+    mouseIsDown = false
+})
+
 document.addEventListener('mousemove', function (event) {
     const { pageX, pageY } = event
     // const pageX = event.pageX
     // const pageY = event.pageY
     x = pageX
+    y = pageY
 })
 
 </script>
