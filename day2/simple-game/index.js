@@ -19,10 +19,10 @@ const state = {
   coins: []
 }
 
-const WORLD_WIDTH = 1000
-const WORLD_HEIGHT = 1000
+const WORLD_WIDTH = 400
+const WORLD_HEIGHT = 400
 
-function reset() {
+function reset () {
   const { players, enemies, coins } = state
   // const players = state.players
 
