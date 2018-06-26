@@ -4,6 +4,7 @@
   "description": "",
   "main": "day2/simple-game/index.js",
   "scripts": {
+    "start": "node day2/simple-game/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
