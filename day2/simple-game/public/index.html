@@ -1,0 +1,232 @@
+<html>
+<head>
+    <!-- <style>
+        selector-css {
+            reglas de css
+        }
+    </style> -->
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            cursor: help;
+        }
+    </style>
+</head>
+<body>
+<script>
+const canvas = document.createElement('canvas')
+document.body.appendChild(canvas)
+
+canvas.width = window.innerWidth
+canvas.height = window.innerHeight
+
+const ctx = canvas.getContext('2d')
+
+const enemies = []
+const coins = []
+
+const player = {
+    x: 50,
+    y: 50,
+    size: 20
+}
+let score = 0
+
+while (enemies.length < 10) {
+    enemies.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: Math.random() > 0.5 ? 1 : -1,
+        vy: Math.random() > 0.5 ? 1 : -1,
+        size: Math.random() * 20 + 20
+    })
+}
+
+function reset () {
+    while (coins.length) coins.pop()
+
+    player.x = Math.random() * canvas.width
+    player.y = Math.random() * canvas.height
+    score = 0
+
+    while (coins.length < 10) {
+        coins.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 15 + 5
+        })
+    }
+}
+reset()
+
+function collides (obj1, obj2) {
+    return !(obj1.x + obj1.size/2 < obj2.x - obj2.size/2 ||
+             obj2.x + obj2.size/2 < obj1.x - obj1.size/2 ||
+             obj1.y + obj1.size/2 < obj2.y - obj2.size/2 ||
+             obj2.y + obj2.size/2 < obj1.y - obj1.size/2)
+}
+
+// debugger
+// collides({ x: 5, y: 5, size: 5}, { x: 10, y: 10, size: 6})
+
+function render () {
+    ctx.save()
+    // setTimeout(render, 16)
+    requestAnimationFrame(render)
+
+    // background clear
+    ctx.fillStyle = '#EEEEFF'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    // player movement
+    if (keyboard.a) player.x--
+    if (keyboard.d) player.x++
+    if (keyboard.w) player.y--
+    if (keyboard.s) player.y++
+
+    ctx.translate(
+        canvas.width/2 - player.x,
+        canvas.height/2 - player.y
+    )
+
+    // player rendering
+    ctx.fillStyle = mouseIsDown ? 'cyan' : 'blue' 
+    ctx.fillRect(player.x - player.size/2,
+                 player.y - player.size/2,
+                 player.size,
+                 player.size)
+    
+    // draw viewport
+    ctx.strokeStyle = 'black'
+    ctx.beginPath()
+    ctx.rect(player.x - canvas.width/3,
+             player.y - canvas.height/3,
+             2 * canvas.width/3,
+             2 * canvas.height/3)
+    ctx.stroke()
+
+    // draw ctx cross/origin
+    ctx.strokeStyle = 'cyan'
+    ctx.lineWidth = 10
+    ctx.beginPath()
+    ctx.moveTo(-50, 0)
+    ctx.lineTo(50, 0)
+    ctx.moveTo(0, -50)
+    ctx.lineTo(0, 50)
+    ctx.stroke()
+
+    // enemy logic + render
+    enemies.forEach(enemy => {
+        enemy.x += enemy.vx
+        enemy.y += enemy.vy
+
+        ctx.fillStyle = 'red'
+        ctx.fillRect(
+            enemy.x - enemy.size / 2,
+            enemy.y - enemy.size / 2,
+            enemy.size,
+            enemy.size
+        )
+
+        if (enemy.x < 0 || enemy.x > canvas.width) enemy.vx *= -1
+        if (enemy.y < 0 || enemy.y > canvas.height) enemy.vy *= -1
+
+        if (collides(player, enemy)) reset()
+    })
+
+    // coins logic + render
+    coins.forEach((coin, i) => {
+        ctx.save()
+        ctx.translate(coin.x, coin.y)
+        ctx.rotate(Date.now() / 200 % (Math.PI*2))
+        ctx.fillStyle = 'magenta'
+        ctx.fillRect(-coin.size/2, -coin.size/2, coin.size, coin.size)
+        ctx.restore()
+
+        if (collides(player, coin)) {
+            score += Math.ceil(coin.size)
+            coins.splice(i, 1)
+        }
+    })
+
+    ctx.restore()
+
+    ctx.fillStyle = 'black'
+    ctx.font = "24px Helvetica"
+    ctx.fillText("Score: " + score, 20, 30)
+}
+
+// setInterval(render, 16)
+// setTimeout(render, 16)
+requestAnimationFrame(render)
+
+let mouseIsDown = false
+document.addEventListener('mousedown', function (event) {
+    mouseIsDown = true
+})
+
+document.addEventListener('mouseup', function () {
+    mouseIsDown = false
+})
+
+const keyboard = {}
+
+document.addEventListener('keydown', function (event) {
+    keyboard[event.key] = true
+})
+
+document.addEventListener('keyup', function (event) {
+    keyboard[event.key] = false
+})
+
+/**
+    simples:
+    number
+    string
+    boolean
+
+    let a = 5
+    let b = a
+    a === b // true
+    b = 6
+    a === b // false
+
+
+    complex (objects):
+    objects
+    array
+    function
+    Date
+
+    let a = { x: 5, y: 5 }
+    b = a
+    b.x = 7
+    a === b // true
+
+    const c = { x: 5, y: 5 }
+    a === c // false
+    c.x = 6
+    c = a // ERROR
+
+    function functionName (arg1, arg2) {
+        code
+
+        return 'asdasd'
+    }
+
+    (arg1, arg2) => { ... }
+
+    arg1 => { ... }
+
+    **/
+
+
+</script>
+</body>
+</html>
