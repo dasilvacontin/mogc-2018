@@ -55,7 +55,7 @@ function collides (obj1, obj2) {
     obj2.y + obj2.size / 2 < obj1.y - obj1.size / 2)
 }
 
-function logic() {
+function logic () {
   setTimeout(logic, 16)
 
   const { players, enemies, coins } = state
@@ -101,15 +101,21 @@ function logic() {
 logic()
 
 io.on('connection', (socket) => {
+  console.log('player connected')
+
   const player = {
     x: Math.random() * WORLD_WIDTH,
     y: Math.random() * WORLD_HEIGHT,
-    size: 20
+    size: 20,
+    id: socket.id,
+    keyboard: {},
+    score: 0
   }
 
   state.players.push(player)
 
   socket.on('input', function (keyboard) {
+    console.log('got player input', keyboard)
     player.keyboard = keyboard
   })
 })
